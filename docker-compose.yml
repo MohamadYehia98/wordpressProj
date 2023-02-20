@@ -1,0 +1,67 @@
+# awal shi b7addedlo l version te3ol l docker compose
+version: "2.15.1"
+#l services henne l containers ly badde a3malon run
+services:
+
+#IMAGE LAYER FOR DATABASE >> MYSQL
+  mysql_database:
+ #image taba3et l container
+    image: mysql
+    # restart eza tafa l container besabab mshklee men7otta always la ya3malo restart
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: wp_db
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: 1234
+
+# l volumes ly henne l location te3ol image l sql 
+    volumes:
+      - mysql:/var/lib/mysql
+
+# hala2 badde eshte8el aal layer te3ol l wordpress on appache
+  wordpress:
+  #depends on yaany ma beshte8el aal layer l tene ly la ysha8el l awal awal shi
+    depends_on :
+      - mysql_database
+
+    image: 
+      wordpress:latest
+
+    restart: always
+
+    ports: 
+      - "8000:80"
+
+    environment:
+     
+      WORDPRESS_DB_HOST: mysql_database:3306
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: 1234
+      WORDPRESS_DB_NAME: wp_db
+
+    volumes:
+      ["./:/var/www/html"]
+
+#image for php my admin
+
+  phpmyadmin:
+    depends_on :
+        - mysql_database
+    image: phpmyadmin/phpmyadmin
+
+    restart: always
+
+    ports: 
+       - "8080:80"
+
+    environment:
+       PMA_HOST: mysql_database
+       MYSQL_ROOT_PASSWORD : 1234
+
+volumes:
+  mysql: {}   
+     
+
+    
